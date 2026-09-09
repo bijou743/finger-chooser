@@ -1,0 +1,11 @@
+<svg data-dc-tpl="46" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <line data-dc-tpl="47" x1="12" y1="12" x2="4.5" y2="5"></line>
+              <line data-dc-tpl="48" x1="12" y1="12" x2="19.5" y2="6.5"></line>
+              <line data-dc-tpl="49" x1="12" y1="12" x2="7" y2="19"></line>
+              <line data-dc-tpl="50" x1="12" y1="12" x2="18" y2="18.5"></line>
+              <circle data-dc-tpl="51" cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"></circle>
+              <circle data-dc-tpl="52" cx="4.5" cy="5" r="2.2" fill="currentColor" stroke="none"></circle>
+              <circle data-dc-tpl="53" cx="19.5" cy="6.5" r="2.2" fill="currentColor" stroke="none"></circle>
+              <circle data-dc-tpl="54" cx="7" cy="19" r="2.2" fill="currentColor" stroke="none"></circle>
+              <circle data-dc-tpl="55" cx="18" cy="18.5" r="2.2" fill="currentColor" stroke="none"></circle>
+            </svg>

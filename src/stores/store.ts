@@ -1,0 +1,173 @@
+import { defineStore } from 'pinia';
+import { type ITouch } from '@/types/ITouch';
+import { ref } from 'vue';
+import { type TMode } from '@/types/TMode';
+
+type TStatus = 'inactive' | 'process' | 'ready';
+
+const TIMER_SECONDS = 2;
+
+export const useStore = defineStore('store', () => {
+	const touches = ref<ITouch[]>([]);
+	const seconds = ref<number>(TIMER_SECONDS);
+	const status = ref<TStatus>('inactive');
+	const mode = ref<TMode>('choose-one');
+	const selectedIndex = ref<number | null>();
+
+	let timeout: number | undefined;
+	let interval: number | undefined;
+
+	function randomColor() {
+		const hue = Math.round(Math.random() * 360);
+		return `hsl(${hue}, 85%, 65%)`;
+	}
+
+	function setMode(newMode: TMode) {
+		mode.value = newMode;
+	}
+
+	function getMinFingers() {
+		switch (mode.value) {
+			case 'choose-one':
+				return 2;
+			case 'grouping':
+				return 3;
+			case 'ranking':
+				return 2;
+			default:
+				return 2;
+		}
+	}
+
+	function resetTimers() {
+		if (timeout) clearTimeout(timeout);
+		if (interval) clearInterval(interval);
+		status.value = 'inactive';
+	}
+
+	function chooseOne() {
+		selectedIndex.value = Math.round(
+			Math.random() * (touches.value.length - 1),
+		);
+	}
+
+	function grouping() {
+		touches.value.sort(() => Math.random() - 0.5);
+	}
+
+	function ranking() {
+		touches.value.sort(() => Math.random() - 0.5);
+	}
+
+	function makeSelection() {
+		switch (mode.value) {
+			case 'choose-one':
+				chooseOne();
+				break;
+			case 'grouping':
+				grouping();
+				break;
+			case 'ranking':
+				ranking();
+				break;
+			default:
+				break;
+		}
+	}
+
+	function initTimers() {
+		if (touches.value.length >= getMinFingers()) {
+			timeout = setTimeout(() => {
+				seconds.value = TIMER_SECONDS;
+
+				status.value = 'process';
+				interval = setInterval(() => {
+					seconds.value--;
+
+					if (seconds.value === 0) {
+						makeSelection();
+						status.value = 'ready';
+						clearInterval(interval);
+						return;
+					}
+				}, 1000);
+			}, 500);
+		}
+	}
+
+	function addTouch(event: TouchEvent) {
+		event.preventDefault();
+
+		if (status.value === 'ready') {
+			return;
+		}
+
+		resetTimers();
+
+		for (const touch of event.changedTouches) {
+			touches.value.push({
+				x: touch.clientX,
+				y: touch.clientY,
+				id: touch.identifier,
+				color: randomColor(),
+			});
+		}
+
+		initTimers();
+	}
+
+	function updateTouch(event: TouchEvent) {
+		event.preventDefault();
+
+		if (status.value === 'ready') {
+			return;
+		}
+
+		for (const touch of event.changedTouches) {
+			const stored = touches.value.find((t) => t.id === touch.identifier);
+			if (stored) {
+				stored.x = touch.clientX;
+				stored.y = touch.clientY;
+			}
+		}
+	}
+
+	function removeTouch(event: TouchEvent) {
+		event.preventDefault();
+
+		if (status.value === 'ready') {
+			return;
+		}
+
+		resetTimers();
+
+		const ids = Array.from(event.changedTouches).map(
+			(touch) => touch.identifier,
+		);
+		touches.value = touches.value.filter((touch) => !ids.includes(touch.id));
+
+		initTimers();
+	}
+
+	function reset() {
+		status.value = 'inactive';
+		touches.value = [];
+		seconds.value = TIMER_SECONDS;
+		clearTimeout(timeout);
+		clearInterval(interval);
+		selectedIndex.value = null;
+	}
+
+	return {
+		touches,
+		addTouch,
+		updateTouch,
+		removeTouch,
+		seconds,
+		status,
+		reset,
+		setMode,
+		getMinFingers,
+		selectedIndex,
+	};
+});

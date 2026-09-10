@@ -20,7 +20,11 @@
 
 @layer base {
 	html {
-		@apply h-dvh bg-linear-to-b from-brand-pink to-brand-purple-light;
+		@apply bg-brand-purple;
+	}
+
+	body {
+		@apply min-h-dvh bg-linear-to-b from-brand-pink to-brand-purple-light;
 	}
 
 	h2 {

@@ -107,32 +107,25 @@ onMounted(() => {
 			</button>
 		</div>
 
-		<TransitionGroup
-			enter-active-class="transition-scale duration-200 ease-out"
-			enter-from-class="scale-0"
-			leave-active-class=""
-			tag="div"
+		<div
+			v-for="(touch, index) in touches"
+			:key="touch.id"
+			:style="`top: ${touch.y}px; left: ${touch.x}px; border-color: ${borderColor(touch, index)}`"
+			class="w-24 h-24 border-10 absolute -translate-x-1/2 -translate-y-1/2 rounded-full shadow-[0_0_16px_4px_rgba(255,255,255,0.5)] flex items-center justify-center pointer-events-none"
+			:class="[
+				touchClassList(index),
+				status === 'ready'
+					? ''
+					: 'transition-[opacity,scale] duration-200 ease-in-out',
+			]"
 		>
-			<div
-				v-for="(touch, index) in touches"
-				:key="touch.id"
-				:style="`top: ${touch.y}px; left: ${touch.x}px; border-color: ${borderColor(touch, index)}`"
-				class="w-24 h-24 border-10 absolute -translate-x-1/2 -translate-y-1/2 rounded-full shadow-[0_0_16px_4px_rgba(255,255,255,0.5)] flex items-center justify-center pointer-events-none"
-				:class="[
-					touchClassList(index),
-					status === 'ready'
-						? ''
-						: 'transition-[opacity,scale] duration-200 ease-in-out',
-				]"
+			<span
+				v-if="status === 'ready' && mode === 'ranking'"
+				class="text-white text-3xl font-black"
 			>
-				<span
-					v-if="status === 'ready' && mode === 'ranking'"
-					class="text-white text-3xl font-black"
-				>
-					{{ index + 1 }}
-				</span>
-			</div>
-		</TransitionGroup>
+				{{ index + 1 }}
+			</span>
+		</div>
 	</div>
 </template>
 

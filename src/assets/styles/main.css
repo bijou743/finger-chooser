@@ -25,8 +25,18 @@
 		}
 	}
 
+	html,
+	body {
+		overscroll-behavior: none;
+		touch-action: none;
+		height: 100%;
+		overflow: hidden;
+	}
+
 	body {
 		@apply min-h-dvh bg-linear-to-b from-brand-pink to-brand-purple-light;
+		position: fixed;
+		width: 100%;
 	}
 
 	h2 {

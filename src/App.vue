@@ -23,9 +23,7 @@ provide(maxTouchesKey, maxTouches);
 </script>
 
 <template>
-	<div
-		class="flex flex-col h-dvh bg-linear-to-b from-brand-pink to-brand-purple-light"
-	>
+	<div class="flex flex-col h-dvh">
 		<main class="flex flex-col flex-1">
 			<RouterView v-if="isTouchDevice" />
 			<div

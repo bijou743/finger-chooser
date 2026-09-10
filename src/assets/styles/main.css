@@ -21,7 +21,7 @@
 @layer base {
 	html,
 	body {
-		@apply bg-brand-pink;
+		@apply bg-linear-to-b from-brand-pink to-brand-purple-light;
 	}
 
 	h2 {

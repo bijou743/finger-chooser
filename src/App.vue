@@ -35,7 +35,7 @@ provide(maxTouchesKey, maxTouches);
 			</div>
 		</main>
 
-		<footer class="bg-brand-purple rounded-t-4xl pb-[env(safe-area-inset-bottom)]">
+		<footer class="bg-brand-purple rounded-t-4xl">
 			<MainMenu />
 		</footer>
 	</div>

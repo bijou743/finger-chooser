@@ -1,53 +1,20 @@
 <script setup lang="ts">
-import {
-	computed,
-	nextTick,
-	onBeforeUnmount,
-	onMounted,
-	ref,
-	toRefs,
-	useTemplateRef,
-	watch,
-} from 'vue';
+import { computed, nextTick, ref, toRefs, watch, inject, onMounted } from 'vue';
 import { useStore } from '@/stores/store';
 import { type TMode } from '@/types/TMode';
 import { type ITouch } from '@/types/ITouch';
+import { maxTouchesKey } from '@/types/injectionKeys';
 
 const props = defineProps<{
 	mode: TMode;
 	title: string;
-	hint?: string;
 	icon: string;
 }>();
 
-const view = useTemplateRef<HTMLDivElement>('view');
 const store = useStore();
 const { touches, seconds, status, selectedIndex } = toRefs(store);
 const isSelectionRevealed = ref(false);
-
-onMounted(() => {
-	store.setMode(props.mode);
-
-	if (!view.value) {
-		return;
-	}
-
-	view.value.addEventListener('touchstart', store.addTouch);
-	view.value.addEventListener('touchmove', store.updateTouch);
-	view.value.addEventListener('touchend', store.removeTouch);
-	view.value.addEventListener('touchcancel', store.removeTouch);
-});
-
-onBeforeUnmount(() => {
-	if (!view.value) {
-		return;
-	}
-
-	view.value.removeEventListener('touchstart', store.addTouch);
-	view.value.removeEventListener('touchmove', store.updateTouch);
-	view.value.removeEventListener('touchend', store.removeTouch);
-	view.value.removeEventListener('touchcancel', store.removeTouch);
-});
+const maxTouches = inject(maxTouchesKey);
 
 const isChooseOneReady = computed(
 	() => props.mode === 'choose-one' && status.value === 'ready',
@@ -87,10 +54,32 @@ function borderColor(touch: ITouch, index: number): string {
 
 	return touch.color;
 }
+
+const hint = computed(() => {
+	const minFingers = store.getMinFingers();
+	let fingers: string[] = [];
+	if (!maxTouches) {
+		fingers.push(`from ${minFingers}`);
+	} else {
+		fingers.push(`${minFingers}-${maxTouches}`);
+	}
+	return `Touch the screen with ${fingers.join('')} fingers to start the game and wait a few
+			seconds for the result`;
+});
+
+onMounted(() => {
+	store.setMode(props.mode);
+});
 </script>
 
 <template>
-	<div class="flex flex-1 flex-col relative" ref="view">
+	<div
+		class="flex flex-1 flex-col relative"
+		@touchstart="store.addTouch"
+		@touchmove="store.updateTouch"
+		@touchend="store.removeTouch"
+		@touchcancel="store.removeTouch"
+	>
 		<div
 			class="flex items-center justify-center flex-col flex-1 gap-4 transition-opacity duration-200 ease-in-out"
 			:class="{ 'opacity-0': touches.length }"
@@ -100,7 +89,6 @@ function borderColor(touch: ITouch, index: number): string {
 		</div>
 
 		<div
-			v-if="hint"
 			class="text-white p-5 text-center text-lg leading-[1.4] absolute bottom-0 left-0 transition-opacity duration-200 ease-in-out w-auto"
 			:class="touches.length ? 'opacity-0' : 'opacity-80'"
 		>

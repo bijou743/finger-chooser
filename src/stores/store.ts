@@ -18,6 +18,11 @@ const COLORS: string[] = [
 	'#FF3B30', // красный
 	'#2EA9FF', // синий
 	'#FFEA8A', // светло-жёлтый
+	'#C4C4C4', // серебристый
+	'#000000', // чёрный
+	'#5C67FF', // индиго
+	'#8B4513', // коричневый
+	'#2E8B57', // морская волна
 ];
 
 export const useStore = defineStore('store', () => {
@@ -25,7 +30,7 @@ export const useStore = defineStore('store', () => {
 	const seconds = ref<number>(TIMER_SECONDS);
 	const status = ref<TStatus>('inactive');
 	const mode = ref<TMode>('choose-one');
-	const selectedIndex = ref<number | null>();
+	const selectedIndex = ref<number | null>(null);
 
 	let timeout: number | undefined;
 	let interval: number | undefined;
@@ -43,17 +48,8 @@ export const useStore = defineStore('store', () => {
 		mode.value = newMode;
 	}
 
-	function getMinFingers() {
-		switch (mode.value) {
-			case 'choose-one':
-				return 2;
-			case 'grouping':
-				return 3;
-			case 'ranking':
-				return 2;
-			default:
-				return 2;
-		}
+	function getMinFingers(): number {
+		return mode.value === 'grouping' ? 3 : 2;
 	}
 
 	function resetTimers() {
@@ -62,18 +58,24 @@ export const useStore = defineStore('store', () => {
 		status.value = 'inactive';
 	}
 
+	function shuffle<T>(array: T[]): T[] {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j]!, array[i]!];
+		}
+		return array;
+	}
+
 	function chooseOne() {
-		selectedIndex.value = Math.round(
-			Math.random() * (touches.value.length - 1),
-		);
+		selectedIndex.value = Math.floor(Math.random() * touches.value.length);
 	}
 
 	function grouping() {
-		touches.value.sort(() => Math.random() - 0.5);
+		shuffle(touches.value);
 	}
 
 	function ranking() {
-		touches.value.sort(() => Math.random() - 0.5);
+		shuffle(touches.value);
 	}
 
 	function makeSelection() {

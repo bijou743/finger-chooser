@@ -17,7 +17,6 @@ watch(
 
 const maxTouches = navigator.maxTouchPoints;
 const isTouchDevice = 'ontouchstart' in window && maxTouches > 1;
-// const isTouchDevice = true;
 
 provide(maxTouchesKey, maxTouches);
 </script>

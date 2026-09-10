@@ -19,8 +19,10 @@
 }
 
 @layer base {
-	html {
-		@apply bg-brand-purple;
+	@media (display-mode: standalone) {
+		html {
+			@apply bg-brand-purple;
+		}
 	}
 
 	body {

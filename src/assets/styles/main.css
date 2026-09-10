@@ -19,6 +19,11 @@
 }
 
 @layer base {
+	html,
+	body {
+		@apply bg-brand-pink;
+	}
+
 	h2 {
 		@apply text-5xl font-semibold text-white;
 	}

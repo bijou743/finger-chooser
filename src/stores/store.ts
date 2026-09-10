@@ -7,6 +7,19 @@ type TStatus = 'inactive' | 'process' | 'ready';
 
 const TIMER_SECONDS = 2;
 
+const COLORS: string[] = [
+	'#FFD500', // жёлтый
+	'#39FF88', // мятно-зелёный
+	'#00E5FF', // голубой
+	'#FF7A00', // оранжевый
+	'#FFFFFF', // белый
+	'#B6FF00', // кислотно-лаймовый
+	'#00FFC2', // бирюзовый
+	'#FF3B30', // красный
+	'#2EA9FF', // синий
+	'#FFEA8A', // светло-жёлтый
+];
+
 export const useStore = defineStore('store', () => {
 	const touches = ref<ITouch[]>([]);
 	const seconds = ref<number>(TIMER_SECONDS);
@@ -16,10 +29,14 @@ export const useStore = defineStore('store', () => {
 
 	let timeout: number | undefined;
 	let interval: number | undefined;
+	let availableColors: string[] = [];
 
 	function randomColor() {
-		const hue = Math.round(Math.random() * 360);
-		return `hsl(${hue}, 85%, 65%)`;
+		if (availableColors.length === 0) {
+			availableColors = [...COLORS];
+		}
+		const index = Math.floor(Math.random() * availableColors.length);
+		return availableColors.splice(index, 1)[0]!;
 	}
 
 	function setMode(newMode: TMode) {
@@ -156,6 +173,7 @@ export const useStore = defineStore('store', () => {
 		clearTimeout(timeout);
 		clearInterval(interval);
 		selectedIndex.value = null;
+		availableColors = [];
 	}
 
 	return {

@@ -2,8 +2,7 @@
 import { useRoute } from 'vue-router';
 import MainMenu from './components/MainMenu.vue';
 import { useStore } from '@/stores/store';
-import { provide, watch } from 'vue';
-import { maxTouchesKey } from '@/types/injectionKeys';
+import { watch } from 'vue';
 
 const store = useStore();
 const route = useRoute();
@@ -17,8 +16,6 @@ watch(
 
 const maxTouches = navigator.maxTouchPoints;
 const isTouchDevice = 'ontouchstart' in window && maxTouches > 1;
-
-provide(maxTouchesKey, maxTouches);
 </script>
 
 <template>

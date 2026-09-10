@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, toRefs, watch, inject, onMounted } from 'vue';
+import { computed, nextTick, ref, toRefs, watch, onMounted } from 'vue';
 import { useStore } from '@/stores/store';
 import { type TMode } from '@/types/TMode';
 import { type ITouch } from '@/types/ITouch';
-import { maxTouchesKey } from '@/types/injectionKeys';
 
 const props = defineProps<{
 	mode: TMode;
@@ -14,7 +13,6 @@ const props = defineProps<{
 const store = useStore();
 const { touches, seconds, status, selectedIndex } = toRefs(store);
 const isSelectionRevealed = ref(false);
-const maxTouches = inject(maxTouchesKey);
 
 const isChooseOneReady = computed(
 	() => props.mode === 'choose-one' && status.value === 'ready',
@@ -57,6 +55,7 @@ function borderColor(touch: ITouch, index: number): string {
 
 const hint = computed(() => {
 	const minFingers = store.getMinFingers();
+	const maxTouches = navigator.maxTouchPoints;
 	let fingers: string[] = [];
 	if (!maxTouches) {
 		fingers.push(`from ${minFingers}`);

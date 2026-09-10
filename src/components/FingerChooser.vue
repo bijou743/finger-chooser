@@ -136,3 +136,19 @@ onMounted(() => {
 		</TransitionGroup>
 	</div>
 </template>
+
+<style scoped>
+@keyframes pulse-scale {
+	0%,
+	100% {
+		scale: 1;
+	}
+	50% {
+		scale: 1.15;
+	}
+}
+
+.animate-pulse-scale {
+	animation: pulse-scale 1s ease-in-out infinite;
+}
+</style>
